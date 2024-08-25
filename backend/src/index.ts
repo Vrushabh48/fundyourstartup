@@ -14,10 +14,14 @@ const port: number = 3000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/startup/dashboard", (req:Request, res:Response)=> {
-    res.json({
-        message: "Home Page"
-    })
+const profiledata = z.object({
+    startupname: z.string(),
+    teamsize: z.string(),
+    
+})
+
+app.get("/startup/dashboard",authmiddleware, (req:Request, res:Response)=> {
+    
 })
 
 const signindata = z.object({
