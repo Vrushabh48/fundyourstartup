@@ -17,11 +17,6 @@ app.use(cors());
 const profiledata = z.object({
     startupname: z.string(),
     teamsize: z.string(),
-    
-})
-
-app.get("/startup/dashboard",authmiddleware, (req:Request, res:Response)=> {
-    
 })
 
 const signindata = z.object({
@@ -108,8 +103,35 @@ app.post("/signininvestor", async (req: Request, res: Response) => {
     });
 });
 
-app.get("/home", authmiddleware, async (req: Request, res: Response) => {
+//startupdetails ----------------------------------
 
+const startupdata = z.object({
+    startupname: z.string(),
+    datefounded: z.string(),
+    industrysector: z.string(),
+    description: z.string(),
+    location: z.string(),
+    companystage: z.string(),
+    productinfo: z.string(),
+    servicesinfo: z.string(),
+    targetaudience: z.string(),
+    totalfundingraised: z.string(),
+    currentrevenue: z.string(),
+    valuation:z.string(),
+    businessplan: z.string(),
+    teamsize: z.string(),
+    partnerships: z.string(),
+    contactemail: z.string(),
+    contactnumber: z.number()
+});
+app.post("/startup/details",authmiddleware,(req:Request, res:Response)=>{
+    const parsedata = startupdata.safeParse(req.body);
+
+    if(!parsedata.success){
+        res.status(403).json({
+            message: "Invalid Entries.."
+        })
+    }
 })
 
 app.listen(port, () => {

@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const zod_1 = require("zod");
-const middleware_1 = require("./middlewares/middleware");
 const { PrismaClient } = require('@prisma/client');
 const cors = require('cors');
 const JWT_SECRET = "jwtsecret";
@@ -24,10 +23,9 @@ const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json());
 app.use(cors());
-app.get("/startup/dashboard", (req, res) => {
-    res.json({
-        message: "Home Page"
-    });
+const profiledata = zod_1.z.object({
+    startupname: zod_1.z.string(),
+    teamsize: zod_1.z.string(),
 });
 const signindata = zod_1.z.object({
     email: zod_1.z.string(),
@@ -94,8 +92,6 @@ app.post("/signininvestor", (req, res) => __awaiter(void 0, void 0, void 0, func
         message: "Sign-in successful",
         token: token
     });
-}));
-app.get("/home", middleware_1.authmiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 app.listen(port, () => {
     console.log(`Server is running on Port : ${port}`);
