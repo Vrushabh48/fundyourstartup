@@ -35,6 +35,9 @@ export default function CompleteProfile(){
                 <Inputfield placeholder="Company Description"/>
                 <Inputfield placeholder="Location"/>
                 <Inputfield placeholder="Company Stage"/>
+                <Inputfield placeholder="Location"/>
+                <Inputfield placeholder="Company Stage"/>
+
                 </div>
             </div>
             <div>
