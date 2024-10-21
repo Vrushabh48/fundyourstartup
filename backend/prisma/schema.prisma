@@ -36,6 +36,7 @@ model Startup {
   id             String  @id @default(uuid())
   startupname    String
   startupemail   String  @unique
+  password       String
   founder        String
   foundedin      String
   stage          String
