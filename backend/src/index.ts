@@ -5,6 +5,7 @@ import zod from 'zod';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken'
 import {sign, verify} from 'jsonwebtoken'
+import { middleware } from './middleware';
 
 dotenv.config();
 
@@ -70,7 +71,7 @@ const loginBody = zod.object({
 })
 
 //login route
-app.post('/login', async (req: Request, res: Response): Promise<any> => {
+app.post('/login', middleware, async (req: Request, res: Response): Promise<any> => {
     const body = req.body;
     const {success} = loginBody.safeParse(body);
     if(!success){
