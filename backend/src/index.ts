@@ -1,13 +1,21 @@
 import express, { Request, Response } from 'express';
-import cors from 'cors';
-import { PrismaClient } from '@prisma/client';  
+import cors from 'cors';  
 import zod from 'zod';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken'
 import {sign, verify} from 'jsonwebtoken'
 import { middleware } from './middleware';
-
 dotenv.config();
+
+import { PrismaClient } from '@prisma/client/edge'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+//prisma client
+const prisma = new PrismaClient({
+    datasourceUrl: process.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+
 
 const app = express();
 app.use(express.json());
@@ -19,8 +27,6 @@ const JWT_SECRET: string = process.env.JWT_SECRET || (() => {
     throw new Error('JWT_SECRET is not defined in the environment variables');
 })();
 
-//prisma client
-const prisma = new PrismaClient();
 
 // Zod schema for validating signup body
 const signupBody = zod.object({
@@ -71,7 +77,7 @@ const loginBody = zod.object({
 })
 
 //login route
-app.post('/login', middleware, async (req: Request, res: Response): Promise<any> => {
+app.post('/login', async (req: Request, res: Response): Promise<any> => {
     const body = req.body;
     const {success} = loginBody.safeParse(body);
     if(!success){
@@ -186,6 +192,9 @@ app.post('/startup-login', async (req: Request, res: Response): Promise<any> => 
         })
     }
     const jwt = await sign({id: startup.id}, JWT_SECRET);
+    return res.json({
+        token: jwt
+    })
 })
 
 // Start the server
