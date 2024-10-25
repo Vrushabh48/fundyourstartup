@@ -4,7 +4,7 @@ import zod from 'zod';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken'
 import {sign, verify} from 'jsonwebtoken'
-import { middleware } from './middleware';
+import { usermiddleware } from './middleware';
 dotenv.config();
 
 import { PrismaClient } from '@prisma/client/edge'
@@ -125,7 +125,7 @@ const registerBody = zod.object({
 })
 
 //startup register route
-app.post('/register-satrtup', async (req: Request, res: Response): Promise<any> => {
+app.post('/startup-register', async (req: Request, res: Response): Promise<any> => {
     const body = await req.body;
     const {success} = await registerBody.safeParse(body);
     if(!success){
@@ -195,6 +195,35 @@ app.post('/startup-login', async (req: Request, res: Response): Promise<any> => 
     return res.json({
         token: jwt
     })
+});
+
+//to output the payload 
+declare global {
+    namespace Express {
+        interface Request {
+            payload?: Record<string, any>;  // Adjust the type as needed
+        }
+    }
+}
+
+app.get('/get-userdata', usermiddleware,async (req: Request, res: Response) => {
+    const payload = req.payload;
+
+    res.status(200).json({
+        message: "Successfully retrieved payload",
+        payload: payload  // Respond with the payload
+    });
+})
+
+app.get('/get-startupdata', async (req: Request, res: Response)=> {
+    try {
+        const details = await prisma.startup.findMany();
+        res.json({
+            data: details
+        })
+    } catch (error) {
+        
+    }
 })
 
 // Start the server
